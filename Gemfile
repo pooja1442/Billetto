@@ -56,3 +56,5 @@ group :test do
   gem "selenium-webdriver"
 end
 gem "rails_event_store", "~> 3.2.0"
+gem "json", "~> 2.11"
+gem 'pry'
