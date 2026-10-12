@@ -1,6 +1,9 @@
 class EventsController < ApplicationController
   def index
-    @events = Events::Event.order(starts_at: :asc)
+    @events = Events::Event.includes(:votes).order(starts_at: :asc)
+    @user_voted_ids = clerk.user_id \
+      ? Events::Vote.where(user_id: clerk.user_id).pluck(:event_id).to_set
+      : Set.new
   end
 
   def sync

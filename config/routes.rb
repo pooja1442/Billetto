@@ -10,8 +10,11 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
-  resources :events, only: [ :index ]
+  resources :events, only: [ :index ] do
+    resources :votes, only: [ :create ]
+  end
   post "events/sync", to: "events#sync", as: :sync_events
+  delete "session", to: "sessions#destroy", as: :sign_out
 
   root "events#index"
 end

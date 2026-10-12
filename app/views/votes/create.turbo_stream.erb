@@ -1,0 +1,4 @@
+<%= turbo_stream.replace "event-vote-#{@event.id}" do %>
+  <span class="vote-count">&#9829; <%= @event.votes.size %></span>
+  <span class="vote-btn vote-btn--voted">Voted</span>
+<% end %>

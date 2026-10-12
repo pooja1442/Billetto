@@ -6,14 +6,6 @@
     <%= button_to "Sync Events", sync_events_path, method: :post, class: "sync-btn" %>
   </header>
 
-  <% if notice.present? %>
-    <p class="flash flash--notice"><%= notice %></p>
-  <% end %>
-
-  <% if alert.present? %>
-    <p class="flash flash--alert"><%= alert %></p>
-  <% end %>
-
   <% if @events.none? %>
     <div class="events-empty">
       <p>No events found. Click <strong>Sync Events</strong> to fetch from Billetto.</p>
@@ -55,11 +47,32 @@
               <p class="event-card__description"><%= truncate(event.description, length: 200) %></p>
             <% end %>
 
-            <% if event.status.present? %>
-              <span class="event-card__status event-card__status--<%= event.status.downcase %>">
-                <%= event.status.humanize %>
-              </span>
-            <% end %>
+            <div class="event-card__footer">
+              <% if event.status.present? %>
+                <span class="event-card__status event-card__status--<%= event.status.downcase %>">
+                  <%= event.status.humanize %>
+                </span>
+              <% end %>
+
+              <div class="event-card__vote">
+                <% if clerk.session %>
+                  <%= turbo_frame_tag "event-vote-#{event.id}" do %>
+                    <span class="vote-count">&#9829; <%= event.votes.size %></span>
+                    <% if @user_voted_ids.include?(event.id) %>
+                      <span class="vote-btn vote-btn--voted">Voted</span>
+                    <% else %>
+                      <%= button_to "Vote", event_votes_path(event),
+                            method: :post,
+                            class: "vote-btn vote-btn--active" %>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <span class="vote-count">&#9829; <%= event.votes.size %></span>
+                  <a href="<%= clerk.sign_in_url %>?redirect_url=<%= CGI.escape(request.url) %>"
+                     class="vote-btn vote-btn--guest">Sign in to vote</a>
+                <% end %>
+              </div>
+            </div>
           </div>
         </li>
       <% end %>
@@ -116,6 +129,20 @@
   .event-card__status--published { background: #d4edda; color: #155724; }
   .event-card__status--cancelled { background: #f8d7da; color: #721c24; }
   .event-card__status--draft     { background: #fff3cd; color: #856404; }
+
+  .event-card__footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: .5rem; }
+
+  .event-card__vote { display: flex; align-items: center; gap: .5rem; }
+  .vote-count { font-size: .85rem; color: #e44646; font-weight: 600; }
+
+  .vote-btn {
+    font-size: .8rem; font-weight: 600; padding: .25rem .75rem;
+    border-radius: 5px; cursor: pointer; border: none; text-align: center;
+  }
+  .vote-btn--active { background: #e44646; color: #fff; }
+  .vote-btn--active:hover { background: #c73030; }
+  .vote-btn--voted  { background: #eee; color: #888; cursor: default; }
+  .vote-btn--guest  { background: transparent; color: #e44646; border: 1px solid #e44646; text-decoration: none; }
 
   @media (max-width: 600px) {
     .event-card { flex-direction: column; }

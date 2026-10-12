@@ -4,6 +4,8 @@ module Events
 
     self.table_name = "events"
 
+    has_many :votes, class_name: "Events::Vote", foreign_key: :event_id, dependent: :destroy
+
     validates :external_id, presence: true, uniqueness: true
     validates :title, presence: true
 

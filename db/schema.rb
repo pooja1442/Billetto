@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_10_140652) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_12_062046) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -55,5 +55,15 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_10_140652) do
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
   end
 
+  create_table "votes", force: :cascade do |t|
+    t.bigint "event_id", null: false
+    t.string "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "user_id"], name: "index_votes_on_event_id_and_user_id", unique: true
+    t.index ["event_id"], name: "index_votes_on_event_id"
+  end
+
   add_foreign_key "event_store_events_in_streams", "event_store_events", column: "event_id", primary_key: "event_id"
+  add_foreign_key "votes", "events"
 end

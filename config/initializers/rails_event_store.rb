@@ -19,5 +19,6 @@ Rails.configuration.to_prepare do
   Rails.configuration.command_bus.tap do |bus|
     bus.register(BillettoApi::FetchPublicEvents, ->(cmd) { cmd.call })
     bus.register(Events::IngestEvent, ->(cmd) { cmd.call })
+    bus.register(Events::VoteForEvent, ->(cmd) { cmd.call })
   end
 end

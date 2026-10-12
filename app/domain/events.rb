@@ -13,6 +13,14 @@ module Events
     }.freeze
   end
 
+  class EventVoted < RubyEventStore::Event
+    SCHEMA = {
+      event_id: Integer,
+      external_id: String,
+      user_id: String,
+    }.freeze
+  end
+
   def self.subscriptions
     [].each_with_object({}) do |handler, hash|
       handler.build_subscriptions.each do |event_class, handlers|

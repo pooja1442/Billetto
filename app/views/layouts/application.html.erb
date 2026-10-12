@@ -18,6 +18,37 @@
   </head>
 
   <body>
+    <nav style="background:#1a1a2e;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-family:system-ui,sans-serif;">
+      <span style="color:#e44646;font-weight:700;font-size:1.1rem;">Billetto</span>
+      <div style="display:flex;align-items:center;gap:1rem;font-size:.9rem;">
+        <% if clerk.session %>
+          <% user = clerk.user %>
+          <span style="color:#ccc;">
+            <%= user&.first_name.presence || user&.email_addresses&.first&.email_address || "Signed in" %>
+          </span>
+          <%= button_to "Sign out", sign_out_path, method: :delete,
+                style: "background:transparent;border:1px solid #555;color:#ccc;padding:.35rem .9rem;border-radius:5px;cursor:pointer;font-size:.85rem;" %>
+        <% else %>
+          <a href="<%= clerk.sign_in_url %>?redirect_url=<%= CGI.escape(request.url) %>" style="color:#ccc;text-decoration:none;">Sign in</a>
+          <a href="<%= ENV['CLERK_SIGN_UP_URL'] %>"
+             style="background:#e44646;color:#fff;padding:.35rem .9rem;border-radius:5px;text-decoration:none;font-weight:600;">
+            Sign up
+          </a>
+        <% end %>
+      </div>
+    </nav>
+
+    <% if notice.present? %>
+      <p style="background:#d4edda;color:#155724;padding:.6rem 1.5rem;margin:0;">
+        <%= notice %>
+      </p>
+    <% end %>
+    <% if alert.present? %>
+      <p style="background:#f8d7da;color:#721c24;padding:.6rem 1.5rem;margin:0;">
+        <%= alert %>
+      </p>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>
