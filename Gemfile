@@ -57,5 +57,5 @@ group :test do
 end
 gem "rails_event_store", "~> 3.2.0"
 gem "clerk-sdk-ruby", require: "clerk"
-gem "json", "~> 2.11"
+gem "json", "~> 3.0"
 gem 'pry'
